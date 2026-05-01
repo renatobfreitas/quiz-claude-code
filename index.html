@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Claude Code</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Tela 1: Entrada (nome do jogador) ───────────────── -->
+  <div id="screen-entry" class="screen">
+    <div class="card">
+      <div class="entry-logo">🤖</div>
+      <div class="entry-header">
+        <h1>Quiz Claude Code</h1>
+        <p class="subtitle">Teste seus conhecimentos com 10 perguntas verdadeiro ou falso</p>
+      </div>
+      <div class="field">
+        <label for="player-name">Qual é o seu nome?</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome" maxlength="50" autocomplete="off">
+        <span id="name-error" class="error-msg hidden">Por favor, digite seu nome.</span>
+      </div>
+      <button id="btn-start" class="btn-primary">Iniciar Quiz →</button>
+    </div>
+  </div>
+
+  <!-- ── Tela 2: Pergunta ─────────────────────────────────── -->
+  <div id="screen-playing" class="screen hidden">
+    <div class="card">
+      <div class="progress-header">
+        <span id="progress-text">Pergunta 1 de 10</span>
+        <span id="progress-pct">10%</span>
+      </div>
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill" style="width:10%"></div>
+      </div>
+      <p id="question-statement" class="statement"></p>
+      <div class="answer-buttons">
+        <button id="btn-true"  class="btn-answer btn-true">✓ Verdadeiro</button>
+        <button id="btn-false" class="btn-answer btn-false">✗ Falso</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tela 3: Feedback (após cada resposta) ────────────── -->
+  <div id="screen-feedback" class="screen hidden">
+    <div class="card">
+      <span id="feedback-badge" class="badge"></span>
+      <div id="feedback-correct-block" class="correct-answer-block hidden">
+        <span class="correct-answer-label">Resposta correta</span>
+        <span id="feedback-correct-value" class="correct-answer-value"></span>
+      </div>
+      <p id="feedback-statement" class="statement-sm"></p>
+      <p id="feedback-explanation" class="explanation"></p>
+      <a id="feedback-doc-link" href="#" target="_blank" rel="noopener" class="doc-link hidden">
+        📄 Ver documentação →
+      </a>
+      <button id="btn-next" class="btn-primary">Próxima pergunta →</button>
+    </div>
+  </div>
+
+  <!-- ── Tela 4: Resultados (fim da sessão) ───────────────── -->
+  <div id="screen-results" class="screen hidden">
+    <div class="card">
+      <div id="results-score-circle" class="score-circle">
+        <span id="results-score-big" class="score-big"></span>
+        <span id="results-score-total" class="score-total"></span>
+      </div>
+      <h2 id="results-title"></h2>
+      <p id="results-encouragement" class="subtitle"></p>
+      <hr class="divider">
+      <div id="results-errors-section" class="hidden">
+        <p class="section-label">🔁 Revise os erros</p>
+        <div id="results-errors-list" class="errors-list"></div>
+      </div>
+      <p id="results-no-errors" class="subtitle hidden">Nenhum erro nesta sessão! 🎉</p>
+      <button id="btn-see-leaderboard" class="btn-primary">Ver placar →</button>
+    </div>
+  </div>
+
+  <!-- ── Tela 5: Placar (top 10) ──────────────────────────── -->
+  <div id="screen-leaderboard" class="screen hidden">
+    <div class="card">
+      <h2>🏆 Top 10</h2>
+      <p class="subtitle">Os melhores resultados de todos os tempos</p>
+      <p id="leaderboard-loading" class="loading">Carregando placar...</p>
+      <table id="leaderboard-table" class="leaderboard-table hidden">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Acertos</th>
+            <th>Tempo</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+      <p id="leaderboard-error" class="subtitle hidden" style="color:var(--coral)">
+        Não foi possível carregar o placar.
+      </p>
+      <button id="btn-play-again" class="btn-secondary">Jogar novamente</button>
+    </div>
+  </div>
+
+  <!-- ── Scripts (ordem importa) ──────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="supabase.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
