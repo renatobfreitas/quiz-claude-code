@@ -170,6 +170,38 @@ function handleAnswer(userAnswer) {
   renderFeedback(q, correct, userAnswer);
 }
 
+// ── Tela de Feedback ───────────────────────────────────────────
+
+function renderFeedback(question, correct, userAnswer) {
+  const badge = document.getElementById('feedback-badge');
+  const correctBlock = document.getElementById('feedback-correct-block');
+  const correctValue = document.getElementById('feedback-correct-value');
+  const docLink = document.getElementById('feedback-doc-link');
+
+  badge.textContent = correct ? '✓ Correto!' : '✗ Incorreto';
+  badge.className = 'badge ' + (correct ? 'badge-correct' : 'badge-wrong');
+
+  if (!correct) {
+    const correctLabel = question.answer ? '✓ Verdadeiro' : '✗ Falso';
+    correctValue.textContent = correctLabel;
+    correctBlock.classList.remove('hidden');
+  } else {
+    correctBlock.classList.add('hidden');
+  }
+
+  document.getElementById('feedback-statement').textContent = question.statement;
+  document.getElementById('feedback-explanation').textContent = question.explanation;
+
+  if (question.doc_url) {
+    docLink.href = question.doc_url;
+    docLink.classList.remove('hidden');
+  } else {
+    docLink.classList.add('hidden');
+  }
+
+  showScreen('feedback');
+}
+
 // ── Event Listeners ────────────────────────────────────────────
 
 document.getElementById('btn-start').addEventListener('click', startQuiz);
@@ -185,6 +217,16 @@ document.getElementById('player-name').addEventListener('input', () => {
 
 document.getElementById('btn-true').addEventListener('click', () => handleAnswer(true));
 document.getElementById('btn-false').addEventListener('click', () => handleAnswer(false));
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  state.currentIndex++;
+  if (state.currentIndex < state.questions.length) {
+    renderPlaying();
+  } else {
+    state.duration = Math.round((Date.now() - state.startTime) / 1000);
+    renderResults();
+  }
+});
 
 // ── Inicialização ──────────────────────────────────────────────
 renderEntry();
