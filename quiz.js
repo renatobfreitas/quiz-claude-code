@@ -218,7 +218,8 @@ function renderResults() {
 
   const wrongAnswers = state.answers
     .filter(a => !a.correct)
-    .map(a => state.questions.find(q => q.id === a.id));
+    .map(a => state.questions.find(q => q.id === a.id))
+    .filter(Boolean);
 
   if (wrongAnswers.length === 0) {
     document.getElementById('results-errors-section').classList.add('hidden');
@@ -234,7 +235,7 @@ function renderResults() {
       item.className = 'error-item';
       item.innerHTML = `
         <span class="ei-statement">${escapeHtml(q.statement)}</span>
-        <span class="ei-correct">✓ ${q.answer ? 'Verdadeiro' : 'Falso'}</span>
+        <span class="ei-correct">${q.answer ? '✓ Verdadeiro' : '✗ Falso'}</span>
         <span class="ei-explain">${escapeHtml(q.explanation)}</span>
         ${q.doc_url ? `<a href="${escapeHtml(q.doc_url)}" target="_blank" rel="noopener" class="ei-link">📄 Ver documentação →</a>` : ''}
       `;
@@ -280,16 +281,20 @@ document.getElementById('btn-next').addEventListener('click', () => {
 });
 
 document.getElementById('btn-see-leaderboard').addEventListener('click', async () => {
-  document.getElementById('btn-see-leaderboard').textContent = 'Salvando...';
-  document.getElementById('btn-see-leaderboard').disabled = true;
+  const btn = document.getElementById('btn-see-leaderboard');
+  btn.textContent = 'Salvando...';
+  btn.disabled = true;
   try {
     await saveScore(state.playerName, getScore(), state.duration);
   } catch (err) {
     console.error('Erro ao salvar score:', err);
   }
-  await renderLeaderboard();
-  document.getElementById('btn-see-leaderboard').textContent = 'Ver placar →';
-  document.getElementById('btn-see-leaderboard').disabled = false;
+  try {
+    await renderLeaderboard();
+  } finally {
+    btn.textContent = 'Ver placar →';
+    btn.disabled = false;
+  }
 });
 
 // ── Inicialização ──────────────────────────────────────────────
