@@ -38,7 +38,7 @@ function getEncouragementMessage(score) {
 function formatDuration(seconds) {
   if (!seconds) return '—';
   const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
+  const s = Math.floor(seconds % 60);
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
