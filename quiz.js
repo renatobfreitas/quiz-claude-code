@@ -254,6 +254,50 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+// ── Tela de Placar ─────────────────────────────────────────────
+
+async function renderLeaderboard() {
+  showScreen('leaderboard');
+  document.getElementById('leaderboard-loading').classList.remove('hidden');
+  document.getElementById('leaderboard-table').classList.add('hidden');
+  document.getElementById('leaderboard-error').classList.add('hidden');
+
+  try {
+    const rows = await fetchLeaderboard();
+    const tbody = document.getElementById('leaderboard-body');
+    tbody.innerHTML = '';
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Nenhum resultado ainda.</td></tr>';
+    } else {
+      rows.forEach((row, index) => {
+        const position = index + 1;
+        const isCurrentPlayer =
+          row.player_name === state.playerName &&
+          row.score === getScore();
+
+        const tr = document.createElement('tr');
+        if (isCurrentPlayer) tr.classList.add('highlight');
+
+        tr.innerHTML = `
+          <td class="rank ${position <= 3 ? 'medal-' + position : ''}">${getMedalLabel(position)}</td>
+          <td>${escapeHtml(row.player_name)}</td>
+          <td class="score-cell">${row.score}/${row.total_questions}</td>
+          <td class="time-cell">${formatDuration(row.duration_seconds)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('leaderboard-loading').classList.add('hidden');
+    document.getElementById('leaderboard-table').classList.remove('hidden');
+  } catch (err) {
+    console.error('Erro ao carregar placar:', err);
+    document.getElementById('leaderboard-loading').classList.add('hidden');
+    document.getElementById('leaderboard-error').classList.remove('hidden');
+  }
+}
+
 // ── Event Listeners ────────────────────────────────────────────
 
 document.getElementById('btn-start').addEventListener('click', startQuiz);
@@ -296,6 +340,8 @@ document.getElementById('btn-see-leaderboard').addEventListener('click', async (
     btn.disabled = false;
   }
 });
+
+document.getElementById('btn-play-again').addEventListener('click', renderEntry);
 
 // ── Inicialização ──────────────────────────────────────────────
 renderEntry();
