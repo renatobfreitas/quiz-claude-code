@@ -28,7 +28,7 @@ async function saveScore(playerName, score, durationSeconds) {
     player_name: playerName,
     score: score,
     total_questions: 10,
-    duration_seconds: durationSeconds || null,
+    duration_seconds: durationSeconds != null ? durationSeconds : null,
   });
   if (error) throw new Error('Erro ao salvar score: ' + error.message);
 }
