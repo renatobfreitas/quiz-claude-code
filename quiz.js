@@ -202,6 +202,57 @@ function renderFeedback(question, correct, userAnswer) {
   showScreen('feedback');
 }
 
+// ── Tela de Resultados ─────────────────────────────────────────
+
+function renderResults() {
+  const score = getScore();
+  const total = state.questions.length;
+
+  document.getElementById('results-score-big').textContent = score;
+  document.getElementById('results-score-total').textContent = `de ${total}`;
+
+  document.getElementById('results-title').textContent =
+    score === total ? 'Resultado Perfeito! 🎉' : `Você acertou ${score} de ${total}`;
+  document.getElementById('results-encouragement').textContent =
+    getEncouragementMessage(score);
+
+  const wrongAnswers = state.answers
+    .filter(a => !a.correct)
+    .map(a => state.questions.find(q => q.id === a.id));
+
+  if (wrongAnswers.length === 0) {
+    document.getElementById('results-errors-section').classList.add('hidden');
+    document.getElementById('results-no-errors').classList.remove('hidden');
+  } else {
+    document.getElementById('results-no-errors').classList.add('hidden');
+    document.getElementById('results-errors-section').classList.remove('hidden');
+
+    const list = document.getElementById('results-errors-list');
+    list.innerHTML = '';
+    wrongAnswers.forEach(q => {
+      const item = document.createElement('div');
+      item.className = 'error-item';
+      item.innerHTML = `
+        <span class="ei-statement">${escapeHtml(q.statement)}</span>
+        <span class="ei-correct">✓ ${q.answer ? 'Verdadeiro' : 'Falso'}</span>
+        <span class="ei-explain">${escapeHtml(q.explanation)}</span>
+        ${q.doc_url ? `<a href="${escapeHtml(q.doc_url)}" target="_blank" rel="noopener" class="ei-link">📄 Ver documentação →</a>` : ''}
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  showScreen('results');
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // ── Event Listeners ────────────────────────────────────────────
 
 document.getElementById('btn-start').addEventListener('click', startQuiz);
@@ -226,6 +277,19 @@ document.getElementById('btn-next').addEventListener('click', () => {
     state.duration = Math.round((Date.now() - state.startTime) / 1000);
     renderResults();
   }
+});
+
+document.getElementById('btn-see-leaderboard').addEventListener('click', async () => {
+  document.getElementById('btn-see-leaderboard').textContent = 'Salvando...';
+  document.getElementById('btn-see-leaderboard').disabled = true;
+  try {
+    await saveScore(state.playerName, getScore(), state.duration);
+  } catch (err) {
+    console.error('Erro ao salvar score:', err);
+  }
+  await renderLeaderboard();
+  document.getElementById('btn-see-leaderboard').textContent = 'Ver placar →';
+  document.getElementById('btn-see-leaderboard').disabled = false;
 });
 
 // ── Inicialização ──────────────────────────────────────────────
