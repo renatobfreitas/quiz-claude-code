@@ -1,7 +1,6 @@
 .DS_Store
 .superpowers/
 *.local
-config.js
 node_modules/
 .vscode/
 .idea/
