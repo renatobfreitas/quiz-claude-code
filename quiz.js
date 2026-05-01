@@ -108,6 +108,7 @@ function renderEntry() {
 }
 
 async function startQuiz() {
+  if (document.getElementById('btn-start').disabled) return;
   const input = document.getElementById('player-name');
   const name = input.value.trim();
 
