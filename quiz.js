@@ -96,3 +96,94 @@ function showScreen(name) {
   document.getElementById(`screen-${name}`).classList.remove('hidden');
   state.current = name;
 }
+
+// ── Tela de Entrada ────────────────────────────────────────────
+
+function renderEntry() {
+  document.getElementById('player-name').value = '';
+  document.getElementById('name-error').classList.add('hidden');
+  document.getElementById('player-name').classList.remove('error-input');
+  showScreen('entry');
+  document.getElementById('player-name').focus();
+}
+
+async function startQuiz() {
+  const input = document.getElementById('player-name');
+  const name = input.value.trim();
+
+  if (!name) {
+    input.classList.add('error-input');
+    document.getElementById('name-error').classList.remove('hidden');
+    input.focus();
+    return;
+  }
+
+  state.playerName = name;
+  document.getElementById('btn-start').textContent = 'Carregando...';
+  document.getElementById('btn-start').disabled = true;
+
+  try {
+    const bank = await fetchQuestions();
+    if (bank.length < 10) throw new Error('Banco com menos de 10 perguntas ativas.');
+    state.questions = getRandomQuestions(bank, 10);
+    state.currentIndex = 0;
+    state.answers = [];
+    state.startTime = null;
+    state.duration = 0;
+    renderPlaying();
+  } catch (err) {
+    console.error(err);
+    alert('Não foi possível carregar as perguntas. Verifique as credenciais do Supabase no config.js.');
+  } finally {
+    document.getElementById('btn-start').textContent = 'Iniciar Quiz →';
+    document.getElementById('btn-start').disabled = false;
+  }
+}
+
+// ── Tela de Pergunta ───────────────────────────────────────────
+
+function renderPlaying() {
+  const q = state.questions[state.currentIndex];
+  const questionNumber = state.currentIndex + 1;
+  const total = state.questions.length;
+  const pct = Math.round((questionNumber / total) * 100);
+
+  document.getElementById('progress-text').textContent = `Pergunta ${questionNumber} de ${total}`;
+  document.getElementById('progress-pct').textContent = `${pct}%`;
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = `${pct}%`;
+  fill.setAttribute('aria-valuenow', pct);
+  document.getElementById('question-statement').textContent = q.statement;
+
+  if (state.currentIndex === 0) {
+    state.startTime = Date.now();
+  }
+
+  showScreen('playing');
+}
+
+function handleAnswer(userAnswer) {
+  const q = state.questions[state.currentIndex];
+  const correct = userAnswer === q.answer;
+  state.answers.push({ id: q.id, correct });
+  renderFeedback(q, correct, userAnswer);
+}
+
+// ── Event Listeners ────────────────────────────────────────────
+
+document.getElementById('btn-start').addEventListener('click', startQuiz);
+
+document.getElementById('player-name').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') startQuiz();
+});
+
+document.getElementById('player-name').addEventListener('input', () => {
+  document.getElementById('player-name').classList.remove('error-input');
+  document.getElementById('name-error').classList.add('hidden');
+});
+
+document.getElementById('btn-true').addEventListener('click', () => handleAnswer(true));
+document.getElementById('btn-false').addEventListener('click', () => handleAnswer(false));
+
+// ── Inicialização ──────────────────────────────────────────────
+renderEntry();
