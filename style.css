@@ -13,6 +13,12 @@
   --border:  #E8E0D5;
   --shadow:  0 4px 24px rgba(0,0,0,0.08);
   --radius:  16px;
+  --text-secondary: #444444;
+  --text-tertiary:  #555555;
+  --coral-tint:     #FFF8F6;
+  --medal-gold:     #F0B429;
+  --medal-silver:   #A0A0A0;
+  --medal-bronze:   #C47A3A;
 }
 
 /* ── Reset e Base ───────────────────────────────────────────── */
@@ -82,7 +88,8 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
   transition: border-color 0.15s;
 }
 .field input:focus { border-color: var(--coral); }
-.field input.error-input { border-color: var(--coral); }
+.field input:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+.field input.error-input { border-color: var(--coral); background: var(--coral-light); }
 .error-msg { font-size: 12px; color: var(--coral); font-weight: 600; }
 
 /* ── Progresso ──────────────────────────────────────────────── */
@@ -139,6 +146,12 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
   background: transparent;
 }
 .btn-answer:active { transform: scale(0.97); }
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-answer:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .btn-true  { border-color: var(--green); color: var(--green); }
 .btn-true:hover  { background: var(--green-light); }
 .btn-false { border-color: var(--coral); color: var(--coral); }
@@ -149,7 +162,7 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
   width: 100%;
   padding: 14px;
   background: var(--coral);
-  color: white;
+  color: var(--white);
   border: none;
   border-radius: 10px;
   font-size: 15px;
@@ -158,6 +171,12 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
   transition: opacity 0.15s;
 }
 .btn-primary:hover { opacity: 0.88; }
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-answer:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
 
 .btn-secondary {
   width: 100%;
@@ -197,7 +216,7 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
 .correct-answer-value { font-size: 16px; font-weight: 700; color: var(--green); }
 
 /* ── Explicação e Link ──────────────────────────────────────── */
-.explanation { font-size: 14px; color: #444; line-height: 1.65; }
+.explanation { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
 .doc-link {
   display: inline-flex;
   align-items: center;
@@ -214,7 +233,7 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
   width: 88px; height: 88px;
   border-radius: 50%;
   background: var(--coral);
-  color: white;
+  color: var(--white);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -226,7 +245,7 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
 
 /* ── Item de Erro na Revisão ────────────────────────────────── */
 .error-item {
-  background: #FFF8F6;
+  background: var(--coral-tint);
   border-left: 3px solid var(--coral);
   border-radius: 0 8px 8px 0;
   padding: 12px 14px;
@@ -236,7 +255,7 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
 }
 .error-item .ei-statement { font-size: 13px; font-weight: 600; color: var(--text); }
 .error-item .ei-correct   { font-size: 12px; color: var(--green); font-weight: 600; }
-.error-item .ei-explain   { font-size: 12px; color: #555; line-height: 1.5; }
+.error-item .ei-explain   { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
 .error-item .ei-link      { font-size: 11px; color: var(--coral); font-weight: 700; text-decoration: none; }
 .error-item .ei-link:hover { text-decoration: underline; }
 .errors-list { display: flex; flex-direction: column; gap: 8px; }
@@ -264,11 +283,16 @@ h2 { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; 
 }
 .leaderboard-table tr:last-child td { border-bottom: none; }
 .leaderboard-table .rank { font-weight: 700; color: var(--muted); width: 28px; }
-.leaderboard-table .medal-1 { color: #F0B429; }
-.leaderboard-table .medal-2 { color: #A0A0A0; }
-.leaderboard-table .medal-3 { color: #C47A3A; }
+.leaderboard-table .medal-1 { color: var(--medal-gold); }
+.leaderboard-table .medal-2 { color: var(--medal-silver); }
+.leaderboard-table .medal-3 { color: var(--medal-bronze); }
 .leaderboard-table tr.highlight td { background: var(--coral-light); font-weight: 700; }
 .leaderboard-table .score-cell { font-weight: 700; }
 .leaderboard-table .time-cell  { color: var(--muted); font-size: 13px; }
 
 .loading { text-align: center; color: var(--muted); font-size: 14px; padding: 20px 0; }
+
+@media (max-width: 400px) {
+  body { padding: 16px 12px; }
+  .card { padding: 24px 16px; }
+}
