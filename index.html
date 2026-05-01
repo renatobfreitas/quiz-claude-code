@@ -32,7 +32,12 @@
         <span id="progress-text">Pergunta 1 de 10</span>
         <span id="progress-pct">10%</span>
       </div>
-      <div class="progress-bar">
+      <div class="progress-bar"
+           role="progressbar"
+           aria-valuenow="10"
+           aria-valuemin="0"
+           aria-valuemax="100"
+           aria-label="Progresso do quiz">
         <div id="progress-fill" class="progress-fill" style="width:10%"></div>
       </div>
       <p id="question-statement" class="statement"></p>
@@ -46,7 +51,7 @@
   <!-- ── Tela 3: Feedback (após cada resposta) ────────────── -->
   <div id="screen-feedback" class="screen hidden">
     <div class="card">
-      <span id="feedback-badge" class="badge"></span>
+      <span id="feedback-badge" class="badge" aria-live="polite" aria-atomic="true"></span>
       <div id="feedback-correct-block" class="correct-answer-block hidden">
         <span class="correct-answer-label">Resposta correta</span>
         <span id="feedback-correct-value" class="correct-answer-value"></span>
@@ -96,7 +101,7 @@
         </thead>
         <tbody id="leaderboard-body"></tbody>
       </table>
-      <p id="leaderboard-error" class="subtitle hidden" style="color:var(--coral)">
+      <p id="leaderboard-error" class="subtitle error-text hidden">
         Não foi possível carregar o placar.
       </p>
       <button id="btn-play-again" class="btn-secondary">Jogar novamente</button>
@@ -104,7 +109,7 @@
   </div>
 
   <!-- ── Scripts (ordem importa) ──────────────────────────── -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.2/dist/umd/supabase.js"></script>
   <script src="config.js"></script>
   <script src="supabase.js"></script>
   <script src="quiz.js"></script>
